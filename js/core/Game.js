@@ -3,6 +3,7 @@ import { Input } from "./Input.js";
 import { ObstacleManager } from "../managers/ObstacleManager.js";
 import { GameState } from "./GameState.js";
 import { CollisionManager } from "./CollisionManager.js";
+import { HUD } from "../ui/HUD.js";
 
 export class Game {
 
@@ -22,6 +23,8 @@ export class Game {
 
         this.obstacleManager = new ObstacleManager(this);
 
+        this.hud = new HUD(this);
+
         window.addEventListener("resize", () => {
             this.resize();
         });
@@ -35,26 +38,43 @@ export class Game {
 
     }
 
-    update(){
+    restart() {
 
-        if(this.state !== GameState.RUNNING){
+        this.state = GameState.RUNNING;
+
+        this.player = new Player(this);
+
+        this.obstacleManager = new ObstacleManager(this);
+
+    }
+
+    update() {
+
+        if (this.state === GameState.GAME_OVER) {
+
+            if (this.input.isPressed("Space")) {
+
+                this.restart();
+
+            }
 
             return;
 
         }
-        if(this.input.isPressed("Space")){
+
+        if (this.input.isPressed("Space")) {
 
             this.player.jump();
 
         }
 
         this.player.update();
+
         this.obstacleManager.update();
+
         if (CollisionManager.check(this.player, this.obstacleManager)) {
 
             this.state = GameState.GAME_OVER;
-
-            console.log("💥 GAME OVER");
 
         }
 
@@ -73,6 +93,7 @@ export class Game {
 
         this.player.draw(this.ctx);
         this.obstacleManager.draw(this.ctx);
+        this.hud.draw(this.ctx);
 
     }
 
@@ -81,6 +102,8 @@ export class Game {
         this.update();
 
         this.draw();
+
+        this.input.update();
 
         requestAnimationFrame(this.loop);
 
