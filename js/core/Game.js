@@ -4,6 +4,8 @@ import { ObstacleManager } from "../managers/ObstacleManager.js";
 import { GameState } from "./GameState.js";
 import { CollisionManager } from "./CollisionManager.js";
 import { HUD } from "../ui/HUD.js";
+import { ScoreManager } from "../managers/ScoreManager.js";
+
 
 export class Game {
 
@@ -25,6 +27,8 @@ export class Game {
 
         this.hud = new HUD(this);
 
+        this.scoreManager = new ScoreManager();
+
         window.addEventListener("resize", () => {
             this.resize();
         });
@@ -45,6 +49,8 @@ export class Game {
         this.player = new Player(this);
 
         this.obstacleManager = new ObstacleManager(this);
+
+        this.scoreManager.reset();
 
     }
 
@@ -71,6 +77,8 @@ export class Game {
         this.player.update();
 
         this.obstacleManager.update();
+
+        this.scoreManager.update();
 
         if (CollisionManager.check(this.player, this.obstacleManager)) {
 
