@@ -6,6 +6,7 @@ export class Input {
         this.previousKeys = new Set();
 
         window.addEventListener("keydown", (event) => {
+            if (event.repeat) return;
             this.keys.add(event.code);
         });
 

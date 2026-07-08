@@ -52,7 +52,7 @@ export class Game {
 
         if (this.state === GameState.GAME_OVER) {
 
-            if (this.input.isPressed("Space")) {
+            if (this.input.wasPressed("Space")) {
 
                 this.restart();
 
@@ -62,7 +62,7 @@ export class Game {
 
         }
 
-        if (this.input.isPressed("Space")) {
+        if (this.input.wasPressed("Space")) {
 
             this.player.jump();
 
