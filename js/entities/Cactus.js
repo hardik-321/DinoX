@@ -5,13 +5,9 @@ export class Cactus {
         this.game = game;
 
         const types = [
-
             { width: 30, height: 55 },
-
             { width: 45, height: 75 },
-
             { width: 60, height: 90 }
-
         ];
 
         const randomType =
@@ -37,8 +33,14 @@ export class Cactus {
 
     draw(ctx) {
 
-        ctx.fillStyle = "#2E8B57";
+        // Cactus Color
+        ctx.fillStyle = "#43A047";
 
+        // Outline
+        ctx.strokeStyle = "#111";
+        ctx.lineWidth = 2;
+
+        // ===== Body =====
         ctx.fillRect(
             this.x,
             this.y,
@@ -46,6 +48,14 @@ export class Cactus {
             this.height
         );
 
+        ctx.strokeRect(
+            this.x,
+            this.y,
+            this.width,
+            this.height
+        );
+
+        // ===== Left Arm =====
         if (this.height >= 75) {
 
             ctx.fillRect(
@@ -55,8 +65,16 @@ export class Cactus {
                 20
             );
 
+            ctx.strokeRect(
+                this.x - 8,
+                this.y + 18,
+                8,
+                20
+            );
+
         }
 
+        // ===== Right Arm =====
         if (this.height >= 90) {
 
             ctx.fillRect(
@@ -64,6 +82,34 @@ export class Cactus {
                 this.y + 30,
                 8,
                 22
+            );
+
+            ctx.strokeRect(
+                this.x + this.width,
+                this.y + 30,
+                8,
+                22
+            );
+
+        }
+
+        // ===== Eyes =====
+        ctx.fillStyle = "#111";
+
+        if (this.height >= 75) {
+
+            ctx.fillRect(
+                this.x + this.width / 2 - 6,
+                this.y + 12,
+                3,
+                3
+            );
+
+            ctx.fillRect(
+                this.x + this.width / 2 + 3,
+                this.y + 12,
+                3,
+                3
             );
 
         }

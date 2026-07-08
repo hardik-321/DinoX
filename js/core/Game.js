@@ -33,11 +33,11 @@ export class Game {
 
         this.input = new Input();
 
+        this.scoreManager = new ScoreManager();
+
         this.enemyManager = new EnemyManager(this);
 
         this.hud = new HUD(this);
-
-        this.scoreManager = new ScoreManager();
 
         window.addEventListener("resize", () => {
             this.resize();
@@ -90,6 +90,18 @@ export class Game {
         if (this.input.wasPressed("Space")) {
 
             this.player.jump();
+
+        }
+        if (
+            this.input.isPressed("ArrowDown") ||
+            this.input.isPressed("KeyS")
+        ) {
+
+            this.player.duck();
+
+        } else {
+
+            this.player.standUp();
 
         }
 

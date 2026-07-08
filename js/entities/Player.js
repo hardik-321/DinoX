@@ -4,20 +4,26 @@ export class Player {
 
         this.game = game;
 
-        this.width = 50;
-        this.height = 60;
-
+        // Position
         this.x = 100;
 
-        this.y = this.game.canvas.height - this.game.groundHeight - this.height;
+        this.width = 50;
 
+        this.normalHeight = 60;
+        this.duckHeight = 35;
+
+        this.height = this.normalHeight;
+
+        this.y = this.getGroundY();
+
+        // Physics
         this.velocityY = 0;
-
         this.gravity = 0.8;
-
         this.jumpForce = -18;
 
+        // States
         this.isJumping = false;
+        this.isDucking = false;
 
         // Animation
         this.frame = 0;
@@ -26,23 +32,32 @@ export class Player {
 
     }
 
+    getGroundY() {
+
+        return this.game.canvas.height -
+               this.game.groundHeight -
+               this.normalHeight;
+
+    }
+
     update() {
 
         this.velocityY += this.gravity;
+
         this.y += this.velocityY;
 
-        const groundY =
-            this.game.canvas.height - this.game.groundHeight;
+        const ground = this.getGroundY();
 
-        if (this.y >= groundY - this.height) {
+        if (this.y >= ground) {
 
-            this.y = groundY - this.height;
+            this.y = ground;
+
             this.velocityY = 0;
+
             this.isJumping = false;
 
         }
 
-        // Running animation
         if (!this.isJumping) {
 
             this.frameTimer++;
@@ -59,110 +74,134 @@ export class Player {
 
     }
 
+    jump() {
+
+        if (this.isJumping) return;
+
+        this.velocityY = this.jumpForce;
+
+        this.isJumping = true;
+
+    }
+
+    duck() {
+
+        // Cannot duck while jumping or falling
+        if (this.isJumping || this.velocityY !== 0) return;
+
+        if (this.isDucking) return;
+
+        this.isDucking = true;
+
+        const oldBottom = this.y + this.height;
+
+        this.height = this.duckHeight;
+
+        this.y = oldBottom - this.height;
+
+    }
+
+    standUp() {
+
+        if (!this.isDucking) return;
+
+        const ground = this.getGroundY();
+
+        // Stand up only when on the ground
+        if (this.y !== ground) return;
+
+        const oldBottom = this.y + this.height;
+
+        this.height = this.normalHeight;
+
+        this.y = oldBottom - this.height;
+
+        this.isDucking = false;
+
+    }
+
     draw(ctx) {
 
         ctx.fillStyle = "#3CB043";
-
-        // Body
-        ctx.fillRect(
-            this.x + 10,
-            this.y + 10,
-            30,
-            40
-        );
-
-        // Head
-        ctx.fillRect(
-            this.x + 30,
-            this.y,
-            20,
-            20
-        );
-
-        // Eye
-        ctx.fillStyle = "#000";
-
-        ctx.fillRect(
-            this.x + 44,
-            this.y + 5,
-            3,
-            3
-        );
+        const offsetY = this.isDucking ? 25 : 0;
 
         // Tail
-        ctx.fillStyle = "#3CB043";
-
         ctx.fillRect(
             this.x,
-            this.y + 20,
+            this.y + 20 + offsetY,
             10,
             10
         );
 
-        // Legs
-        if (this.isJumping) {
+        // Body
+        ctx.fillRect(
+            this.x + 10,
+            this.y + 10 + offsetY,
+            30,
+            this.height - 20
+        );
+
+        // Head
+        if (!this.isDucking) {
+
+            ctx.fillRect(
+                this.x + 30,
+                this.y + offsetY,
+                20,
+                20
+            );
+
+        }
+
+        // Eye
+        ctx.fillStyle = "#000";
+
+        if (!this.isDucking) {
+
+            ctx.fillRect(
+                this.x + 44,
+                this.y + 5 + offsetY,
+                3,
+                3
+            );
+
+        }
+
+        ctx.fillStyle = "#3CB043";
+
+        const legY = this.y + this.height - 10;
+
+        if (this.frame === 0) {
 
             ctx.fillRect(
                 this.x + 15,
-                this.y + 50,
+                legY,
                 6,
                 10
             );
 
             ctx.fillRect(
                 this.x + 30,
-                this.y + 50,
+                legY - 4,
                 6,
-                10
+                14
             );
 
         } else {
 
-            if (this.frame === 0) {
+            ctx.fillRect(
+                this.x + 15,
+                legY - 4,
+                6,
+                14
+            );
 
-                ctx.fillRect(
-                    this.x + 15,
-                    this.y + 50,
-                    6,
-                    10
-                );
-
-                ctx.fillRect(
-                    this.x + 30,
-                    this.y + 46,
-                    6,
-                    14
-                );
-
-            } else {
-
-                ctx.fillRect(
-                    this.x + 15,
-                    this.y + 46,
-                    6,
-                    14
-                );
-
-                ctx.fillRect(
-                    this.x + 30,
-                    this.y + 50,
-                    6,
-                    10
-                );
-
-            }
-
-        }
-
-    }
-
-    jump() {
-
-        if (!this.isJumping) {
-
-            this.velocityY = this.jumpForce;
-
-            this.isJumping = true;
+            ctx.fillRect(
+                this.x + 30,
+                legY,
+                6,
+                10
+            );
 
         }
 
