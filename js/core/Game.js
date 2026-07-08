@@ -1,10 +1,13 @@
 import { Player } from "../entities/Player.js";
 import { Input } from "./Input.js";
-import { ObstacleManager } from "../managers/ObstacleManager.js";
+import { EnemyManager } from "../managers/EnemyManager.js";
 import { GameState } from "./GameState.js";
 import { CollisionManager } from "./CollisionManager.js";
 import { HUD } from "../ui/HUD.js";
 import { ScoreManager } from "../managers/ScoreManager.js";
+import { Ground } from "../entities/Ground.js";
+import { CloudManager } from "../managers/CloudManager.js";
+import { EnvironmentManager } from "../managers/EnvironmentManager.js";
 
 
 export class Game {
@@ -14,6 +17,7 @@ export class Game {
         this.canvas = document.getElementById("gameCanvas");
         this.ctx = this.canvas.getContext("2d");
         this.gameSpeed = 8;
+        this.maxGameSpeed = 18;
         this.groundHeight = 120;
         this.state = GameState.RUNNING;
 
@@ -21,9 +25,15 @@ export class Game {
 
         this.player = new Player(this);
 
+        this.ground = new Ground(this);
+
+        this.cloudManager = new CloudManager(this);
+
+        this.environment = new EnvironmentManager(this);
+
         this.input = new Input();
 
-        this.obstacleManager = new ObstacleManager(this);
+        this.enemyManager = new EnemyManager(this);
 
         this.hud = new HUD(this);
 
@@ -48,9 +58,18 @@ export class Game {
 
         this.player = new Player(this);
 
-        this.obstacleManager = new ObstacleManager(this);
+        this.enemyManager = new EnemyManager(this);
 
         this.scoreManager.reset();
+
+    }
+
+    updateDifficulty() {
+
+        this.gameSpeed = Math.min(
+            8 + Math.floor(this.scoreManager.score / 100),
+            this.maxGameSpeed
+        );
 
     }
 
@@ -76,11 +95,19 @@ export class Game {
 
         this.player.update();
 
-        this.obstacleManager.update();
+        this.ground.update();
+
+        this.cloudManager.update();
+
+        this.environment.update();
+
+        this.enemyManager.update();
 
         this.scoreManager.update();
 
-        if (CollisionManager.check(this.player, this.obstacleManager)) {
+        this.updateDifficulty();
+
+        if (CollisionManager.check(this.player, this.enemyManager)) {
 
             this.state = GameState.GAME_OVER;
 
@@ -90,7 +117,7 @@ export class Game {
 
     draw(){
 
-        this.ctx.fillStyle = "#f7f7f7";
+        this.ctx.fillStyle = this.environment.getSkyColor();
 
         this.ctx.fillRect(
             0,
@@ -99,8 +126,14 @@ export class Game {
             this.canvas.height
         );
 
+        this.cloudManager.draw(this.ctx);
+
+        this.ground.draw(this.ctx);
+
         this.player.draw(this.ctx);
-        this.obstacleManager.draw(this.ctx);
+
+        this.enemyManager.draw(this.ctx);
+
         this.hud.draw(this.ctx);
 
     }

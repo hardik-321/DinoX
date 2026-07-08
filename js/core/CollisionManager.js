@@ -1,20 +1,19 @@
 export class CollisionManager {
 
-    static check(player, obstacleManager) {
+    static check(player, enemyManager) {
 
-        console.log("CollisionManager called");
-
-        for (const obstacle of obstacleManager.obstacles) {
+        for (const enemy of enemyManager.enemies) {
 
             const collision =
-                player.x < obstacle.x + obstacle.width &&
-                player.x + player.width > obstacle.x &&
-                player.y < obstacle.y + obstacle.height &&
-                player.y + player.height > obstacle.y;
+                player.x < enemy.x + enemy.width &&
+                player.x + player.width > enemy.x &&
+                player.y < enemy.y + enemy.height &&
+                player.y + player.height > enemy.y;
 
             if (collision) {
-                console.log("Collision detected!");
+
                 return true;
+
             }
 
         }
