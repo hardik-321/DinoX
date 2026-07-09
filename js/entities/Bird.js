@@ -1,3 +1,5 @@
+import { SpriteLoader } from "../core/SpriteLoader.js";
+
 export class Bird {
 
     constructor(game) {
@@ -13,45 +15,51 @@ export class Bird {
             this.game.canvas.height -
             this.game.groundHeight;
 
-        // Standing dinosaur head position
-        const playerHeadY = this.game.player.getGroundY();
+        // Bird Height
+        const random = Math.random();
 
-        /*
-            35% Low Bird  -> Jump
-            45% Medium Bird -> Duck
-            20% High Bird -> Ignore
-        */
+        if (random < 0.35) {
 
-        const type = Math.random();
+            this.type = "low";
 
-        if (type < 0.35) {
-
-            // LOW BIRD
-            // Player jumps
-
+            // Jump
             this.y = ground - this.height - 5;
 
         }
-        else if (type < 0.80) {
+        else if (random < 0.80) {
 
-            // MEDIUM BIRD
-            // 60 px above the ground
+            this.type = "medium";
 
-            this.y = ground - this.height - 50;
+            // Duck
+            this.y = ground - this.height - 70;
 
         }
         else {
 
-            // HIGH BIRD
+            this.type = "high";
 
+            // Ignore
             this.y = ground - this.height - 145;
 
         }
 
-        this.frame = 0;
-        this.frameTimer = 0;
-        this.frameInterval = 10;
+        // Animation
 
+        this.frames = [
+
+            SpriteLoader.get("bird1"),
+            SpriteLoader.get("bird2"),
+            SpriteLoader.get("bird3")
+
+        ];
+
+        this.currentFrame = 0;
+
+        this.frameTimer = 0;
+
+        this.frameInterval = 8;
+
+        console.log(this.type, this.y);
     }
 
     update() {
@@ -62,7 +70,9 @@ export class Bird {
 
         if (this.frameTimer >= this.frameInterval) {
 
-            this.frame = (this.frame + 1) % 2;
+            this.currentFrame++;
+
+            this.currentFrame %= this.frames.length;
 
             this.frameTimer = 0;
 
@@ -70,84 +80,68 @@ export class Bird {
 
     }
 
+    getHitbox() {
+
+        switch (this.type) {
+
+            case "low":
+
+                return {
+
+                    x: this.x + 8,
+                    y: this.y + 8,
+                    width: this.width - 16,
+                    height: this.height - 16
+
+                };
+
+            case "medium":
+
+                return {
+
+                    x: this.x + 6,
+                    y: this.y + 2,
+                    width: this.width - 12,
+                    height: this.height + 12
+
+                };
+
+            case "high":
+
+                return {
+
+                    x: this.x + 8,
+                    y: this.y + 8,
+                    width: this.width - 16,
+                    height: this.height - 16
+
+                };
+
+        }
+
+    }
+
     draw(ctx) {
 
-        // Body
-        ctx.fillStyle = "#795548";
+        ctx.imageSmoothingEnabled = false;
 
-        ctx.fillRect(
-            this.x + 12,
-            this.y + 10,
-            30,
-            12
+        ctx.shadowColor = "rgba(0,0,0,0.6)";
+        ctx.shadowBlur = 4;
+
+        ctx.drawImage(
+
+            this.frames[this.currentFrame],
+
+            this.x,
+            this.y,
+
+            this.width,
+            this.height
+
         );
 
-        // Head
-        ctx.fillRect(
-            this.x + 40,
-            this.y + 6,
-            10,
-            10
-        );
-
-        // Beak
-        ctx.fillStyle = "#FFB300";
-
-        ctx.fillRect(
-            this.x + 50,
-            this.y + 9,
-            5,
-            3
-        );
-
-        // Wings
-        ctx.fillStyle = "#A1887F";
-
-        if (this.frame === 0) {
-
-            ctx.fillRect(
-                this.x + 18,
-                this.y,
-                12,
-                10
-            );
-
-            ctx.fillRect(
-                this.x + 18,
-                this.y + 22,
-                12,
-                8
-            );
-
-        }
-        else {
-
-            ctx.fillRect(
-                this.x + 18,
-                this.y + 5,
-                12,
-                5
-            );
-
-            ctx.fillRect(
-                this.x + 18,
-                this.y + 20,
-                12,
-                14
-            );
-
-        }
-
-        // Eye
-        ctx.fillStyle = "#000";
-
-        ctx.fillRect(
-            this.x + 46,
-            this.y + 9,
-            2,
-            2
-        );
-
+        ctx.shadowBlur = 0;
+        
     }
 
     isOffScreen() {

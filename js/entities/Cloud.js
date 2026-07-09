@@ -12,7 +12,7 @@ export class Cloud {
 
         this.x = this.game.canvas.width + Math.random() * 300;
 
-        this.y = 50 + Math.random() * 120;
+        this.y = 20 + Math.random() * 70;
 
         this.width = 70 + Math.random() * 40;
 
@@ -36,7 +36,12 @@ export class Cloud {
 
     draw(ctx) {
 
-        ctx.fillStyle = "#ffffff";
+        ctx.save();
+
+        // Make clouds less distracting
+        ctx.globalAlpha = 0.35;
+
+        ctx.fillStyle = "#FFFFFF";
 
         ctx.beginPath();
 
@@ -47,6 +52,8 @@ export class Cloud {
         ctx.arc(this.x + 55, this.y + 15, 15, 0, Math.PI * 2);
 
         ctx.fill();
+
+        ctx.restore();
 
     }
 

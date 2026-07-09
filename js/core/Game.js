@@ -8,7 +8,7 @@ import { ScoreManager } from "../managers/ScoreManager.js";
 import { Ground } from "../entities/Ground.js";
 import { CloudManager } from "../managers/CloudManager.js";
 import { EnvironmentManager } from "../managers/EnvironmentManager.js";
-
+import { SpriteLoader } from "./SpriteLoader.js";
 
 export class Game {
 
@@ -30,6 +30,8 @@ export class Game {
         this.cloudManager = new CloudManager(this);
 
         this.environment = new EnvironmentManager(this);
+
+        this.background = SpriteLoader.get("background");
 
         this.input = new Input();
 
@@ -138,13 +140,26 @@ export class Game {
             this.canvas.height
         );
 
+        // Background Image
+        this.ctx.drawImage(
+
+            this.background,
+
+            0,
+            0,
+
+            this.canvas.width,
+            this.canvas.height
+
+        );
+
         this.cloudManager.draw(this.ctx);
 
         this.ground.draw(this.ctx);
 
-        this.player.draw(this.ctx);
-
         this.enemyManager.draw(this.ctx);
+
+        this.player.draw(this.ctx);
 
         this.hud.draw(this.ctx);
 

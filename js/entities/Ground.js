@@ -1,12 +1,18 @@
+import { SpriteLoader } from "../core/SpriteLoader.js";
+
 export class Ground {
 
     constructor(game) {
 
         this.game = game;
 
+        this.tile = SpriteLoader.get("ground");
+
         this.x = 0;
 
-        this.speed = this.game.gameSpeed;
+        this.scrollSpeed = 0.8;
+
+        this.tileSize = 40;
 
         this.height = this.game.groundHeight;
 
@@ -14,9 +20,9 @@ export class Ground {
 
     update() {
 
-        this.x -= this.game.gameSpeed * 0.8;
+        this.x -= this.game.gameSpeed * this.scrollSpeed;
 
-        if (this.x <= -40) {
+        if (this.x <= -this.tileSize) {
 
             this.x = 0;
 
@@ -28,36 +34,27 @@ export class Ground {
 
         const y = this.game.canvas.height - this.height;
 
-        // Grass
-        ctx.fillStyle = "#6ab04c";
+        // Draw repeated ground tiles
+        for (
 
-        ctx.fillRect(
-            0,
-            y,
-            this.game.canvas.width,
-            6
-        );
+            let x = this.x - this.tileSize;
 
-        // Soil
-        ctx.fillStyle = "#8e5a2b";
+            x < this.game.canvas.width + this.tileSize;
 
-        ctx.fillRect(
-            0,
-            y + 6,
-            this.game.canvas.width,
-            this.height - 6
-        );
+            x += this.tileSize
 
-        // Moving ground pattern
-        ctx.fillStyle = "#5d3a1a";
+        ) {
 
-        for (let i = this.x; i < this.game.canvas.width; i += 40) {
+            ctx.drawImage(
 
-            ctx.fillRect(
-                i,
-                y + 18,
-                20,
-                4
+                this.tile,
+
+                x,
+                y,
+
+                this.tileSize,
+                this.height
+
             );
 
         }

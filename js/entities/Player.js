@@ -1,3 +1,5 @@
+import { SpriteLoader } from "../core/SpriteLoader.js";
+
 export class Player {
 
     constructor(game) {
@@ -29,6 +31,16 @@ export class Player {
         this.frame = 0;
         this.frameTimer = 0;
         this.frameInterval = 8;
+
+        this.sprite = SpriteLoader.get("player");
+
+        this.frameWidth = 24;
+        this.frameHeight = 24;
+
+        this.animationFrame = 0;
+        this.animationTimer = 0;
+        this.animationSpeed = 8;
+        this.currentAnimation = "run";
 
     }
 
@@ -67,6 +79,42 @@ export class Player {
                 this.frame = (this.frame + 1) % 2;
 
                 this.frameTimer = 0;
+
+            }
+
+        }
+        if (this.isJumping) {
+
+            this.currentAnimation = "jump";
+
+        }
+        else if (this.isDucking) {
+
+            this.currentAnimation = "duck";
+
+        }
+        else {
+
+            this.currentAnimation = "run";
+
+        }
+
+        // Animation
+        this.animationTimer++;
+
+        if (this.animationTimer >= this.animationSpeed) {
+
+            this.animationTimer = 0;
+
+            if (!this.isJumping && !this.isDucking) {
+
+                this.animationFrame++;
+
+                if (this.animationFrame > 3) {
+
+                    this.animationFrame = 0;
+
+                }
 
             }
 
@@ -120,90 +168,69 @@ export class Player {
 
     }
 
+    getHitbox() {
+
+        return {
+
+            x: this.x + 12,
+            y: this.y + 6,
+
+            width: this.width - 24,
+            height: this.height - 10
+
+        };
+
+    }
+
     draw(ctx) {
 
-        ctx.fillStyle = "#3CB043";
-        const offsetY = this.isDucking ? 25 : 0;
+        let frameX = 0;
 
-        // Tail
-        ctx.fillRect(
-            this.x,
-            this.y + 20 + offsetY,
-            10,
-            10
+        let drawX = this.x;
+        let drawY = this.y;
+        let drawWidth = this.width;
+        let drawHeight = this.height;
+
+        if (this.isJumping) {
+
+            frameX = 4;
+
+        }
+        else if (this.isDucking) {
+
+            frameX = 10;
+
+            // Duck sprite settings
+            drawWidth = 65;
+            drawHeight = 35;
+
+            // Keep feet on the ground
+            drawY = this.getGroundY() + (this.normalHeight - drawHeight);
+
+        }
+        else {
+
+            frameX = this.animationFrame;
+
+        }
+
+        ctx.drawImage(
+
+            this.sprite,
+
+            frameX * this.frameWidth,
+            0,
+
+            this.frameWidth,
+            this.frameHeight,
+
+            drawX,
+            drawY,
+
+            drawWidth,
+            drawHeight
+
         );
-
-        // Body
-        ctx.fillRect(
-            this.x + 10,
-            this.y + 10 + offsetY,
-            30,
-            this.height - 20
-        );
-
-        // Head
-        if (!this.isDucking) {
-
-            ctx.fillRect(
-                this.x + 30,
-                this.y + offsetY,
-                20,
-                20
-            );
-
-        }
-
-        // Eye
-        ctx.fillStyle = "#000";
-
-        if (!this.isDucking) {
-
-            ctx.fillRect(
-                this.x + 44,
-                this.y + 5 + offsetY,
-                3,
-                3
-            );
-
-        }
-
-        ctx.fillStyle = "#3CB043";
-
-        const legY = this.y + this.height - 10;
-
-        if (this.frame === 0) {
-
-            ctx.fillRect(
-                this.x + 15,
-                legY,
-                6,
-                10
-            );
-
-            ctx.fillRect(
-                this.x + 30,
-                legY - 4,
-                6,
-                14
-            );
-
-        } else {
-
-            ctx.fillRect(
-                this.x + 15,
-                legY - 4,
-                6,
-                14
-            );
-
-            ctx.fillRect(
-                this.x + 30,
-                legY,
-                6,
-                10
-            );
-
-        }
 
     }
 

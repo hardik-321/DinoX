@@ -1,3 +1,5 @@
+import { SpriteLoader } from "../core/SpriteLoader.js";
+
 export class Cactus {
 
     constructor(game) {
@@ -5,9 +7,13 @@ export class Cactus {
         this.game = game;
 
         const types = [
-            { width: 30, height: 55 },
-            { width: 45, height: 75 },
-            { width: 60, height: 90 }
+
+            { width: 42, height: 60 },
+
+            { width: 54, height: 78 },
+
+            { width: 64, height: 96 }
+
         ];
 
         const randomType =
@@ -15,6 +21,8 @@ export class Cactus {
 
         this.width = randomType.width;
         this.height = randomType.height;
+
+        this.sprite = SpriteLoader.get("cactus");
 
         this.x = this.game.canvas.width;
 
@@ -31,88 +39,40 @@ export class Cactus {
 
     }
 
+    getHitbox() {
+
+        return {
+
+            x: this.x + this.width * 0.28,
+            y: this.y + 2,
+
+            width: this.width * 0.44,
+            height: this.height - 4
+
+        };
+
+    }
+
     draw(ctx) {
 
-        // Cactus Color
-        ctx.fillStyle = "#43A047";
+        ctx.imageSmoothingEnabled = false;
 
-        // Outline
-        ctx.strokeStyle = "#111";
-        ctx.lineWidth = 2;
+        ctx.shadowColor = "rgba(0,0,0,0.6)";
+        ctx.shadowBlur = 4;
 
-        // ===== Body =====
-        ctx.fillRect(
+        ctx.drawImage(
+
+            this.sprite,
+
             this.x,
             this.y,
+
             this.width,
             this.height
+
         );
-
-        ctx.strokeRect(
-            this.x,
-            this.y,
-            this.width,
-            this.height
-        );
-
-        // ===== Left Arm =====
-        if (this.height >= 75) {
-
-            ctx.fillRect(
-                this.x - 8,
-                this.y + 18,
-                8,
-                20
-            );
-
-            ctx.strokeRect(
-                this.x - 8,
-                this.y + 18,
-                8,
-                20
-            );
-
-        }
-
-        // ===== Right Arm =====
-        if (this.height >= 90) {
-
-            ctx.fillRect(
-                this.x + this.width,
-                this.y + 30,
-                8,
-                22
-            );
-
-            ctx.strokeRect(
-                this.x + this.width,
-                this.y + 30,
-                8,
-                22
-            );
-
-        }
-
-        // ===== Eyes =====
-        ctx.fillStyle = "#111";
-
-        if (this.height >= 75) {
-
-            ctx.fillRect(
-                this.x + this.width / 2 - 6,
-                this.y + 12,
-                3,
-                3
-            );
-
-            ctx.fillRect(
-                this.x + this.width / 2 + 3,
-                this.y + 12,
-                3,
-                3
-            );
-
-        }
+        
+        ctx.shadowBlur = 0;
 
     }
 
