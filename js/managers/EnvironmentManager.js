@@ -6,7 +6,7 @@ export class EnvironmentManager {
 
         this.time = 0;
 
-        this.dayLength = 12000;
+        this.dayLength = 18000;
 
     }
 

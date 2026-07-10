@@ -24,7 +24,7 @@ export class Cloud {
 
     update() {
 
-        this.x -= this.speed + this.game.gameSpeed * 0.05;
+        this.x -= this.speed + this.game.gameSpeed * 0.02;
 
         if (this.x + this.width < 0) {
 

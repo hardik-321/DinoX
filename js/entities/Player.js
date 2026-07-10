@@ -9,10 +9,10 @@ export class Player {
         // Position
         this.x = 100;
 
-        this.width = 50;
+        this.width = 56;
 
-        this.normalHeight = 60;
-        this.duckHeight = 35;
+        this.normalHeight = 68;
+        this.duckHeight = 15;
 
         this.height = this.normalHeight;
 
@@ -141,28 +141,11 @@ export class Player {
 
         this.isDucking = true;
 
-        const oldBottom = this.y + this.height;
-
-        this.height = this.duckHeight;
-
-        this.y = oldBottom - this.height;
+        this.isDucking = true;
 
     }
 
     standUp() {
-
-        if (!this.isDucking) return;
-
-        const ground = this.getGroundY();
-
-        // Stand up only when on the ground
-        if (this.y !== ground) return;
-
-        const oldBottom = this.y + this.height;
-
-        this.height = this.normalHeight;
-
-        this.y = oldBottom - this.height;
 
         this.isDucking = false;
 
@@ -170,13 +153,27 @@ export class Player {
 
     getHitbox() {
 
+        if (this.isDucking) {
+
+            return {
+
+                x: this.x + 10,
+                y: this.y + 30,
+
+                width: this.width - 20,
+                height: 20
+
+            };
+
+        }
+
         return {
 
-            x: this.x + 12,
-            y: this.y + 6,
+            x: this.x + 13,
+            y: this.y + 7,
 
-            width: this.width - 24,
-            height: this.height - 10
+            width: this.width - 26,
+            height: this.normalHeight - 12
 
         };
 
@@ -201,8 +198,8 @@ export class Player {
             frameX = 10;
 
             // Duck sprite settings
-            drawWidth = 65;
-            drawHeight = 35;
+            drawWidth = 72;
+            drawHeight = 40;
 
             // Keep feet on the ground
             drawY = this.getGroundY() + (this.normalHeight - drawHeight);
@@ -214,6 +211,22 @@ export class Player {
 
         }
 
+        ctx.fillStyle = "rgba(0,0,0,0.18)";
+
+        ctx.beginPath();
+
+        ctx.ellipse(
+            Math.round(drawX + drawWidth / 2),
+            this.getGroundY() + drawHeight + 2,
+            drawWidth * 0.30,
+            4,
+            0,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
         ctx.drawImage(
 
             this.sprite,
@@ -224,8 +237,8 @@ export class Player {
             this.frameWidth,
             this.frameHeight,
 
-            drawX,
-            drawY,
+            Math.round(drawX),
+            Math.round(drawY),
 
             drawWidth,
             drawHeight

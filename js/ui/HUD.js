@@ -10,7 +10,7 @@ export class HUD {
 
         ctx.fillStyle = "#000";
 
-        ctx.font = "24px Arial";
+        ctx.font = "30px Arial";
 
         ctx.textAlign = "left";
 

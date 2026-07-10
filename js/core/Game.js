@@ -15,9 +15,17 @@ export class Game {
     constructor() {
 
         this.canvas = document.getElementById("gameCanvas");
+
+        this.virtualWidth = 1400;
+        this.virtualHeight = 700;
+
+        this.offsetX = 0;
+        this.offsetY = 0;
+
         this.ctx = this.canvas.getContext("2d");
-        this.gameSpeed = 8;
-        this.maxGameSpeed = 18;
+        this.ctx.imageSmoothingEnabled = false;
+        this.gameSpeed = 6;
+        this.maxGameSpeed = 15;
         this.groundHeight = 120;
         this.state = GameState.RUNNING;
 
@@ -52,6 +60,14 @@ export class Game {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
 
+        this.ctx.imageSmoothingEnabled = false;
+
+        this.offsetX =
+            (this.canvas.width - this.virtualWidth) / 2;
+
+        this.offsetY =
+            (this.canvas.height - this.virtualHeight) / 2;
+
     }
 
     restart() {
@@ -69,7 +85,7 @@ export class Game {
     updateDifficulty() {
 
         this.gameSpeed = Math.min(
-            8 + Math.floor(this.scoreManager.score / 100),
+            6 + Math.floor(this.scoreManager.score / 100),
             this.maxGameSpeed
         );
 
@@ -138,19 +154,6 @@ export class Game {
             0,
             this.canvas.width,
             this.canvas.height
-        );
-
-        // Background Image
-        this.ctx.drawImage(
-
-            this.background,
-
-            0,
-            0,
-
-            this.canvas.width,
-            this.canvas.height
-
         );
 
         this.cloudManager.draw(this.ctx);

@@ -2,17 +2,17 @@ import { SpriteLoader } from "../core/SpriteLoader.js";
 
 export class Cactus {
 
-    constructor(game) {
+    constructor(game, x = null) {
 
         this.game = game;
 
         const types = [
 
-            { width: 42, height: 60 },
+            { width: 50, height: 72 },
 
-            { width: 54, height: 78 },
+            { width: 64, height: 92 },
 
-            { width: 64, height: 96 }
+            { width: 78, height: 112 }
 
         ];
 
@@ -24,7 +24,7 @@ export class Cactus {
 
         this.sprite = SpriteLoader.get("cactus");
 
-        this.x = this.game.canvas.width;
+        this.x = x !== null ? x : this.game.canvas.width + 250;
 
         this.y =
             this.game.canvas.height -
@@ -64,8 +64,8 @@ export class Cactus {
 
             this.sprite,
 
-            this.x,
-            this.y,
+            Math.round(this.x),
+            Math.round(this.y),
 
             this.width,
             this.height

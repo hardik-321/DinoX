@@ -6,10 +6,10 @@ export class Bird {
 
         this.game = game;
 
-        this.width = 55;
-        this.height = 35;
+        this.width = 64;
+        this.height = 42;
 
-        this.x = this.game.canvas.width;
+        this.x = this.game.canvas.width + 250;
 
         const ground =
             this.game.canvas.height -
@@ -31,7 +31,7 @@ export class Bird {
             this.type = "medium";
 
             // Duck
-            this.y = ground - this.height - 70;
+            this.y = ground - this.height - 64;
 
         }
         else {
@@ -99,10 +99,10 @@ export class Bird {
 
                 return {
 
-                    x: this.x + 6,
-                    y: this.y + 2,
-                    width: this.width - 12,
-                    height: this.height + 12
+                    x: this.x + 7,
+                    y: this.y + 3,
+                    width: this.width - 14,
+                    height: this.height + 4 
 
                 };
 
@@ -132,8 +132,8 @@ export class Bird {
 
             this.frames[this.currentFrame],
 
-            this.x,
-            this.y,
+            Math.round(this.x),
+            Math.round(this.y),
 
             this.width,
             this.height

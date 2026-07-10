@@ -59,6 +59,20 @@ export class Ground {
 
         }
 
+        ctx.fillStyle = "rgba(0,0,0,0.15)";
+
+        ctx.fillRect(
+
+            0,
+
+            y,
+
+            this.game.canvas.width,
+
+            this.height
+
+        );
+
     }
 
 }

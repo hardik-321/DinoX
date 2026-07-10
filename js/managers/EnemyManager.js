@@ -11,6 +11,10 @@ export class EnemyManager {
 
         this.spawnTimer = 0;
 
+        this.minimumGap = 260;
+
+        this.lastSpawnX = -9999;
+
         this.consecutiveCactus = 0;
         this.consecutiveBird = 0;
 
@@ -22,7 +26,10 @@ export class EnemyManager {
 
         this.spawnTimer++;
 
-        if (this.spawnTimer >= this.spawnInterval) {
+        if (
+            this.spawnTimer >= this.spawnInterval &&
+            this.canSpawn()
+        ) {
 
             this.spawnEnemy();
 
@@ -85,6 +92,27 @@ export class EnemyManager {
 
     }
 
+    canSpawn() {
+
+        if (this.enemies.length === 0) {
+
+            return true;
+
+        }
+
+        const lastEnemy = this.enemies[this.enemies.length - 1];
+
+        const gap =
+            this.game.canvas.width - lastEnemy.x;
+
+        const requiredGap =
+            this.minimumGap +
+            this.game.gameSpeed * 8;
+
+        return gap >= requiredGap;
+
+    }
+
     spawnEnemy() {
 
         const score = this.game.scoreManager.score;
@@ -109,14 +137,12 @@ export class EnemyManager {
 
         let spawnBird = Math.random() < birdChance;
 
-        // Prevent too many birds in a row
         if (this.consecutiveBird >= 2) {
 
             spawnBird = false;
 
         }
 
-        // Prevent too many cactus in a row
         if (this.consecutiveCactus >= 3) {
 
             spawnBird = true;
@@ -136,9 +162,45 @@ export class EnemyManager {
         }
         else {
 
-            this.enemies.push(
-                new Cactus(this.game)
-            );
+            const first = new Cactus(this.game);
+
+            this.enemies.push(first);
+
+            if (this.game.scoreManager.score >= 300) {
+
+                const chance = Math.random();
+
+                // ---------- Triple Cactus (10%) ----------
+                if (chance < 0.10) {
+
+                    const second = new Cactus(
+                        this.game,
+                        first.x + first.width - 4
+                    );
+
+                    const third = new Cactus(
+                        this.game,
+                        second.x + second.width - 4
+                    );
+
+                    this.enemies.push(second);
+                    this.enemies.push(third);
+
+                }
+
+                // ---------- Double Cactus (25%) ----------
+                else if (chance < 0.35) {
+
+                    const second = new Cactus(
+                        this.game,
+                        first.x + first.width - 4
+                    );
+
+                    this.enemies.push(second);
+
+                }
+
+            }
 
             this.consecutiveCactus++;
 
