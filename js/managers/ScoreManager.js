@@ -8,6 +8,9 @@ export class ScoreManager {
 
         this.frameCounter = 0;
 
+        this.milestone = "";
+        this.milestoneTimer = 0;
+
     }
 
     update() {
@@ -18,6 +21,14 @@ export class ScoreManager {
         if (this.frameCounter >= 6) {
 
             this.score++;
+
+            if (this.score > 0 && this.score % 100 === 0) {
+
+                this.milestone = `⭐ ${this.score} POINTS !`;
+
+                this.milestoneTimer = 120;
+
+            }
 
             this.frameCounter = 0;
 
@@ -31,6 +42,12 @@ export class ScoreManager {
 
         }
 
+        if (this.milestoneTimer > 0) {
+
+            this.milestoneTimer--;
+
+        }
+
     }
 
     reset() {
@@ -38,6 +55,9 @@ export class ScoreManager {
         this.score = 0;
 
         this.frameCounter = 0;
+
+        this.milestone = "";
+        this.milestoneTimer = 0;
 
     }
 

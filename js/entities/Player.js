@@ -62,6 +62,33 @@ export class Player {
 
         if (this.y >= ground) {
 
+            // Just landed
+            if (this.isJumping) {
+
+                // Left foot
+                this.game.particleManager.addDust(
+
+                    this.x + 12,
+
+                    this.getGroundY() + this.normalHeight,
+
+                    4
+
+                );
+
+                // Right foot
+                this.game.particleManager.addDust(
+
+                    this.x + this.width - 12,
+
+                    this.getGroundY() + this.normalHeight,
+
+                    4
+
+                );
+
+            }
+
             this.y = ground;
 
             this.velocityY = 0;
@@ -125,6 +152,8 @@ export class Player {
     jump() {
 
         if (this.isJumping) return;
+
+        this.game.sound.play("jump");
 
         this.velocityY = this.jumpForce;
 

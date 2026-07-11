@@ -9,6 +9,9 @@ import { Ground } from "../entities/Ground.js";
 import { CloudManager } from "../managers/CloudManager.js";
 import { EnvironmentManager } from "../managers/EnvironmentManager.js";
 import { SpriteLoader } from "./SpriteLoader.js";
+import { SoundManager } from "../managers/SoundManager.js";
+import { ParticleManager } from "../managers/ParticleManager.js";
+
 
 export class Game {
 
@@ -27,7 +30,12 @@ export class Game {
         this.gameSpeed = 6;
         this.maxGameSpeed = 15;
         this.groundHeight = 120;
+        this.shakeDuration = 0;
+        this.shakeStrength = 0;
         this.state = GameState.RUNNING;
+        this.canRestart = false;
+        this.gameOverTimer = 0;
+        this.lastMilestone = "";
 
         this.resize();
 
@@ -38,6 +46,10 @@ export class Game {
         this.cloudManager = new CloudManager(this);
 
         this.environment = new EnvironmentManager(this);
+
+        this.sound = new SoundManager();
+
+        this.particleManager = new ParticleManager();
 
         this.background = SpriteLoader.get("background");
 
@@ -52,6 +64,15 @@ export class Game {
         window.addEventListener("resize", () => {
             this.resize();
         });
+
+        this.sound.load("jump", "assets/sounds/jump.wav");
+
+        this.sound.load("hit", "assets/sounds/hit.wav");
+
+        this.sound.load(
+            "milestone",
+            "assets/sounds/milestone.wav"
+        );
 
     }
 
@@ -80,6 +101,12 @@ export class Game {
 
         this.scoreManager.reset();
 
+        this.canRestart = false;
+
+        this.gameOverTimer = 0;
+
+        this.lastMilestone = "";
+
     }
 
     updateDifficulty() {
@@ -94,6 +121,15 @@ export class Game {
     update() {
 
         if (this.state === GameState.GAME_OVER) {
+
+            this.gameOverTimer++;
+
+            // Wait about 1 second (60 FPS)
+            if (this.gameOverTimer < 60) {
+
+                return;
+
+            }
 
             if (this.input.wasPressed("Space")) {
 
@@ -133,11 +169,38 @@ export class Game {
 
         this.enemyManager.update();
 
+        this.particleManager.update();
+
         this.scoreManager.update();
+
+        if (
+            this.scoreManager.milestone !== "" &&
+            this.scoreManager.milestone !== this.lastMilestone
+        ) {
+
+            this.sound.play("milestone");
+
+            this.lastMilestone =
+                this.scoreManager.milestone;
+
+        }
 
         this.updateDifficulty();
 
+        if (this.shakeDuration > 0) {
+
+            this.shakeDuration--;
+
+        }
+
         if (CollisionManager.check(this.player, this.enemyManager)) {
+
+            this.sound.play("hit");
+
+            this.shakeDuration = 8;
+            this.shakeStrength = 2;
+
+            this.gameOverTimer = 0;
 
             this.state = GameState.GAME_OVER;
 
@@ -148,6 +211,20 @@ export class Game {
     draw(){
 
         this.ctx.fillStyle = this.environment.getSkyColor();
+
+        this.ctx.save();
+
+        if (this.shakeDuration > 0) {
+
+            const offsetX =
+                (Math.random() - 0.5) * this.shakeStrength;
+
+            const offsetY =
+                (Math.random() - 0.5) * this.shakeStrength;
+
+            this.ctx.translate(offsetX, offsetY);
+
+        }
 
         this.ctx.fillRect(
             0,
@@ -160,11 +237,15 @@ export class Game {
 
         this.ground.draw(this.ctx);
 
+        this.particleManager.draw(this.ctx);
+
         this.enemyManager.draw(this.ctx);
 
         this.player.draw(this.ctx);
 
         this.hud.draw(this.ctx);
+
+        this.ctx.restore();
 
     }
 
