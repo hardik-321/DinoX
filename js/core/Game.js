@@ -32,10 +32,13 @@ export class Game {
         this.groundHeight = 120;
         this.shakeDuration = 0;
         this.shakeStrength = 0;
-        this.state = GameState.RUNNING;
+        this.state = GameState.READY;
+        this.countdown = 3;
+        this.countdownTimer = this.isMobile ? 40 : 60;
         this.canRestart = false;
         this.gameOverTimer = 0;
         this.lastMilestone = "";
+        this.runTime = 0;
 
         this.resize();
 
@@ -48,6 +51,8 @@ export class Game {
         this.environment = new EnvironmentManager(this);
 
         this.sound = new SoundManager();
+
+        this.soundMuted = false;
 
         this.particleManager = new ParticleManager();
 
@@ -107,6 +112,8 @@ export class Game {
 
         this.lastMilestone = "";
 
+        this.runTime = 0;
+
     }
 
     updateDifficulty() {
@@ -119,6 +126,73 @@ export class Game {
     }
 
     update() {
+
+        if (this.input.wasPressed("KeyM")) {
+
+            this.soundMuted = !this.soundMuted;
+
+            this.sound.enabled = !this.soundMuted;
+
+        }
+
+        if (this.input.wasPressed("KeyP")) {
+
+            if (this.state === GameState.RUNNING) {
+
+                this.state = GameState.PAUSED;
+
+            }
+            else if (this.state === GameState.PAUSED) {
+
+                this.state = GameState.RUNNING;
+
+            }
+
+        }
+
+        if (this.state === GameState.PAUSED) {
+
+            return;
+
+        }
+
+        if (this.state === GameState.READY) {
+
+            if (this.input.wasPressed("Space")) {
+
+                this.state = GameState.COUNTDOWN;
+
+                this.countdown = 3;
+
+                this.countdownTimer = this.isMobile ? 40 : 60;
+
+            }
+
+            return;
+
+        }
+
+        if (this.state === GameState.COUNTDOWN) {
+
+            this.countdownTimer--;
+
+            if (this.countdownTimer <= 0) {
+
+                this.countdown--;
+
+                this.countdownTimer = 60;
+
+                if (this.countdown < 0) {
+
+                    this.state = GameState.RUNNING;
+
+                }
+
+            }
+
+            return;
+
+        }
 
         if (this.state === GameState.GAME_OVER) {
 
@@ -172,6 +246,8 @@ export class Game {
         this.particleManager.update();
 
         this.scoreManager.update();
+
+        this.runTime++;
 
         if (
             this.scoreManager.milestone !== "" &&

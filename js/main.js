@@ -1,10 +1,22 @@
 import { Game } from "./core/Game.js";
 import { SpriteLoader } from "./core/SpriteLoader.js";
+import { LoadingScreen } from "./ui/LoadingScreen.js";
+
+const canvas = document.getElementById("gameCanvas");
+
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+LoadingScreen.draw(ctx, canvas);
 
 async function start() {
 
     try {
 
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
         await Promise.all([
             SpriteLoader.load(
                 "player",

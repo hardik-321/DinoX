@@ -5,6 +5,7 @@ export class Player {
     constructor(game) {
 
         this.game = game;
+        this.jumpCount = 0;
 
         // Position
         this.x = 100;
@@ -158,6 +159,8 @@ export class Player {
         this.velocityY = this.jumpForce;
 
         this.isJumping = true;
+
+        this.jumpCount++;
 
     }
 

@@ -4,12 +4,17 @@ export class ScoreManager {
 
         this.score = 0;
 
+        this.newHighScoreTimer = 0;
+
         this.highScore = Number(localStorage.getItem("highScore")) || 0;
 
         this.frameCounter = 0;
 
         this.milestone = "";
+
         this.milestoneTimer = 0;
+
+        this.newHighScoreShown = false;
 
     }
 
@@ -38,6 +43,14 @@ export class ScoreManager {
 
             this.highScore = this.score;
 
+            if (!this.newHighScoreShown) {
+
+                this.newHighScoreTimer = 120;
+
+                this.newHighScoreShown = true;
+
+            }
+
             localStorage.setItem("highScore", this.highScore);
 
         }
@@ -45,6 +58,12 @@ export class ScoreManager {
         if (this.milestoneTimer > 0) {
 
             this.milestoneTimer--;
+
+        }
+
+        if (this.newHighScoreTimer > 0) {
+
+            this.newHighScoreTimer--;
 
         }
 
@@ -57,7 +76,10 @@ export class ScoreManager {
         this.frameCounter = 0;
 
         this.milestone = "";
+
         this.milestoneTimer = 0;
+
+        this.newHighScoreShown = false;
 
     }
 

@@ -42,24 +42,33 @@ export class HUD {
 
         );
 
-        if (
+        ctx.font = "18px Arial";
 
-            this.game.scoreManager.score ===
-            this.game.scoreManager.highScore &&
+        ctx.fillStyle = "#444";
 
-            this.game.scoreManager.score > 0
+        ctx.textAlign = "left";
 
-        ) {
+        ctx.fillText(
+
+            this.game.soundMuted ? "🔇 " : "🔊 ",
+
+            20,
+
+            35
+
+        );
+
+        if (this.game.scoreManager.newHighScoreTimer > 0) {
+
+            ctx.font = "bold 24px Arial";
 
             ctx.fillStyle = "#FFD700";
-
-            ctx.font = "bold 22px Arial";
 
             ctx.textAlign = "center";
 
             ctx.fillText(
 
-                "NEW HIGH SCORE!",
+                "🏆 NEW HIGH SCORE! 🏆",
 
                 this.game.canvas.width / 2,
 
@@ -69,23 +78,159 @@ export class HUD {
 
         }
 
-        if (
-            this.game.scoreManager.score ===
-            this.game.scoreManager.highScore &&
-            this.game.scoreManager.score > 0
-        ) {
+        if (this.game.state === GameState.READY) {
 
-            ctx.font = "bold 24px Arial";
+            ctx.fillStyle = "rgba(0,0,0,0.65)";
 
-            ctx.fillStyle = "#FFD700";
+            ctx.fillRect(
+
+                0,
+
+                0,
+
+                this.game.canvas.width,
+
+                this.game.canvas.height
+
+            );
+
+            ctx.textAlign = "center";
+
+            ctx.fillStyle = "#FFFFFF";
+
+            ctx.font = "bold 72px Arial";
 
             ctx.fillText(
 
-                "🏆 NEW HIGH SCORE! 🏆",
+                "DINOX",
 
                 this.game.canvas.width / 2,
 
-                this.game.canvas.height / 2 - 70
+                this.game.canvas.height / 2 - 120
+
+            );
+
+            ctx.font = "32px Arial";
+
+            ctx.fillText(
+
+                "Press SPACE to Start",
+
+                this.game.canvas.width / 2,
+
+                this.game.canvas.height / 2 - 30
+
+            );
+
+            ctx.font = "24px Arial";
+
+            ctx.fillText(
+
+                "SPACE = Jump",
+
+                this.game.canvas.width / 2,
+
+                this.game.canvas.height / 2 + 40
+
+            );
+
+            ctx.fillText(
+
+                "↓ = Duck",
+
+                this.game.canvas.width / 2,
+
+                this.game.canvas.height / 2 + 80
+
+            );
+
+            ctx.fillText(
+
+                `HIGH SCORE : ${this.game.scoreManager.highScore
+                    .toString()
+                    .padStart(5, "0")}`,
+
+                this.game.canvas.width / 2,
+
+                this.game.canvas.height / 2 + 150
+
+            );
+
+        }
+
+        if (this.game.state === GameState.COUNTDOWN) {
+
+            ctx.fillStyle = "rgba(0,0,0,0.55)";
+
+            ctx.fillRect(
+
+                0,
+                0,
+                this.game.canvas.width,
+                this.game.canvas.height
+
+            );
+
+            ctx.textAlign = "center";
+
+            ctx.fillStyle = "#FFFFFF";
+
+            ctx.font = "bold 110px Arial";
+
+            const text = this.game.countdown > 0
+                ? this.game.countdown
+                : "GO!";
+
+            ctx.fillText(
+
+                text,
+
+                this.game.canvas.width / 2,
+
+                this.game.canvas.height / 2
+
+            );
+
+        }
+
+        if (this.game.state === GameState.PAUSED) {
+
+            ctx.fillStyle = "rgba(0,0,0,0.60)";
+
+            ctx.fillRect(
+
+                0,
+                0,
+                this.game.canvas.width,
+                this.game.canvas.height
+
+            );
+
+            ctx.fillStyle = "#FFFFFF";
+
+            ctx.textAlign = "center";
+
+            ctx.font = "bold 70px Arial";
+
+            ctx.fillText(
+
+                "PAUSED",
+
+                this.game.canvas.width / 2,
+
+                this.game.canvas.height / 2 - 20
+
+            );
+
+            ctx.font = "28px Arial";
+
+            ctx.fillText(
+
+                "Press P to Continue",
+
+                this.game.canvas.width / 2,
+
+                this.game.canvas.height / 2 + 45
 
             );
 
@@ -184,7 +329,7 @@ export class HUD {
 
                 this.game.canvas.width / 2,
 
-                this.game.canvas.height / 2 + 235
+                this.game.canvas.height / 2 + 230
 
             );
 
