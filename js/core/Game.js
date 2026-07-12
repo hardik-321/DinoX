@@ -96,6 +96,7 @@ export class Game {
 
     }
 
+
     restart() {
 
         this.state = GameState.RUNNING;
