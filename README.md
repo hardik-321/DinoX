@@ -1,33 +1,19 @@
 # 🦖 DinoX
 
-DinoX is a modern endless runner game inspired by the Chrome Dinosaur game. It is built using HTML5 Canvas and modern JavaScript (ES6 Modules) with an object-oriented architecture.
+> A modern endless runner game inspired by Chrome Dino, built using **JavaScript (ES6 Modules)**, **HTML5 Canvas**, and **Object-Oriented Programming**.
 
-## 🚀 Features
+---
 
-- HTML5 Canvas rendering
-- ES6 Modules
-- Object-Oriented Design
-- Modular Game Engine
-- Infinite Runner Gameplay
+## 🎮 Play Online
 
-## 🛠️ Technologies
+### 🌍 Live Demo
 
-- HTML5
-- CSS3
-- JavaScript (ES6)
+**https://hardik-321.github.io/DinoX/**
 
-## 📂 Project Structure
+---
 
-```text
-DinoX/
-│
-├── assets/
-├── js/
-├── index.html
-├── style.css
-└── README.md
-```
+## 📌 About the Project
 
-## 📌 Status
+DinoX is a desktop-first endless runner game developed from scratch using HTML5 Canvas without any game engine.
 
-🚧 Currently under development.
+The project focuses on clean architecture, modular game development, smooth gameplay mechanics, and professional software engineering practices using Git and sprint-based development.
